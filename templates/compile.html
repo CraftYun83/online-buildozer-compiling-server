@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Compile</title>
+</head>
+<body>
+  <div class="code">
+    <samp>
+      <script>
+        document.write("<h1>Buildozer Logs</h1>")
+        var _id;
+        var source = new EventSource("{{ url_for('sse.stream') }}");
+        source.addEventListener('greeting', function(event) {
+            var data = JSON.parse(event.data);
+            if (data.message.includes("--id")) {
+
+              _id = data.message.replace("--id ", "");
+
+            } else {
+
+              document.getElementById("paragraph1").innerHTML = data.message;
+
+            }
+        }, false);
+        source.addEventListener('error', function(event) {
+            console.log(event.error)
+        }, false);
+        window.addEventListener('beforeunload', function(e) {
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "/stopthread?id="+_id, true);
+          xhr.setRequestHeader('Content-Type', 'text/plain');
+          xhr.send("Hello");
+          e.preventDefault();
+          e.returnValue = '';
+        });
+      </script>
+      <style media="screen">
+        div.output {
+          border-width:2px;
+          border-style:solid;
+          border-color:black;
+          background-color: rgb(189, 189, 189);
+        }
+      </style>
+    </samp>
+  </div>
+</body>
+  <div id='output' class="output">
+    <h3>Command: buildozer -v android debug</h3>
+    <p id="paragraph1"></p>
+  </textarea>
+</html>
