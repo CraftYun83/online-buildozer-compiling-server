@@ -1,0 +1,2 @@
+Current Bug:
+Closing tab on Chrome won't trigger javascript closing event handler. Causing some processes to continue running even after user has left.
